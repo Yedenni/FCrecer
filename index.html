@@ -1,227 +1,44 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Entrada de Datos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Estilo personalizado para la fuente Inter */
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Definir un color verde medio personalizado */
-        .bg-green-220 {
-            background-color: #d1fae5; /* Puedes ajustarlo */
-        }
-    </style>
-</head>
-<body class="bg-green-220 min-h-screen flex items-center justify-center p-4">
-    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-2xl transform transition-all duration-300 hover:scale-[1.01]">
-        <h1 class="text-3xl font-extrabold text-center text-gray-800 mb-8">Registro de Datos</h1>
+function doPost(e) {
+  const sheetName = 'DatosFormulario'; // Nombre de tu hoja de cálculo
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(sheetName);
 
-        <form id="dataForm" class="space-y-6">
-            <div>
-                <label for="fechaHora" class="block text-sm font-medium text-gray-700 mb-1">Fecha y Hora</label>
-                <input type="text" id="fechaHora" name="Fecha y Hora" readonly
-                       class="mt-1 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-            </div>
+  // Si la hoja no existe, la crea
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
+    // Añade los encabezados si la hoja es nueva
+    const headers = [
+      "Fecha y Hora",
+      "Nombre de Empresa",
+      "Dirección",
+      "Teléfono",
+      "Encargado",
+      "Correo Electrónico",
+      "Observación",
+      "Enlace de Google Maps" // ¡Encabezado actualizado!
+    ];
+    sheet.appendRow(headers);
+  }
 
-            <div>
-                <label for="nombreEmpresa" class="block text-sm font-medium text-gray-700 mb-1">Nombre de Empresa</label>
-                <input type="text" id="nombreEmpresa" name="Nombre de Empresa" required
-                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                       placeholder="Ej: Mi Empresa S.A.">
-            </div>
+  // Obtiene los datos del formulario
+  const data = e.parameter; // Si envías FormData (como está configurado por defecto)
 
-            <div>
-                <label for="direccion" class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
-                <input type="text" id="direccion" name="Dirección" required
-                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                       placeholder="Ej: Av. Principal 123, Ciudad">
-            </div>
+  // Prepara la fila para añadir a la hoja
+  const rowData = [
+    data['Fecha y Hora'],
+    data['Nombre de Empresa'],
+    data['Dirección'],
+    data['Teléfono'],
+    data['Encargado'],
+    data['Correo Electrónico'],
+    data['Observación'],
+    data['Enlace de Google Maps'] // ¡Campo actualizado!
+  ];
 
-            <div>
-                <label for="telefono" class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
-                <input type="tel" id="telefono" name="Teléfono" required
-                       pattern="[0-9]{9}" title="Por favor, introduce 9 dígitos numéricos (ej: 912345678)."
-                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                       placeholder="Ej: 912345678">
-            </div>
+  // Añade la fila a la hoja de cálculo
+  sheet.appendRow(rowData);
 
-            <div>
-                <label for="encargado" class="block text-sm font-medium text-gray-700 mb-1">Encargado</label>
-                <input type="text" id="encargado" name="Encargado" required
-                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                       placeholder="Ej: Juan Pérez">
-            </div>
-
-            <div>
-                <label for="correoElectronico" class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
-                <input type="email" id="correoElectronico" name="Correo Electrónico" required
-                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                       placeholder="Ej: contacto@empresa.com">
-            </div>
-
-            <div>
-                <label for="observacion" class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
-                <textarea id="observacion" name="Observación" rows="4"
-                              class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                              placeholder="Cualquier observación adicional..."></textarea>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Ubicación (Latitud, Longitud)</label>
-                <input type="text" id="ubicacionDisplay" readonly
-                       class="mt-1 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                       placeholder="Obteniendo ubicación...">
-                <input type="hidden" id="latitud" name="Latitud">
-                <input type="hidden" id="longitud" name="Longitud">
-            </div>
-
-            <div id="message" class="text-center mt-4" aria-live="polite"></div>
-
-            <button type="submit" id="submitButton"
-                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0 active:scale-95">
-                Enviar Datos
-            </button>
-        </form>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('dataForm');
-            const fechaHoraInput = document.getElementById('fechaHora');
-            const ubicacionDisplay = document.getElementById('ubicacionDisplay');
-            const latitudInput = document.getElementById('latitud');
-            const longitudInput = document.getElementById('longitud');
-            const messageDiv = document.getElementById('message');
-            const submitButton = document.getElementById('submitButton'); // Obtenemos el botón
-
-            // --- Configuración ---
-            const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0MYEi0PxIvrOMrsjnLMPEumNfuak2u9WmaDYrOnyFwdJOqh9cgRCGSy3GrRDweDH10Q/exec';
-            // --- Fin de Configuración ---
-
-            // Función para obtener la fecha y hora actual
-            function updateDateTime() {
-                const now = new Date();
-                const options = {
-                    year: 'numeric', month: '2-digit', day: '2-digit',
-                    hour: '2-digit', minute: '2-digit', second: '2-digit',
-                    hour12: false // Formato 24 horas
-                };
-                fechaHoraInput.value = now.toLocaleString('es-CL', options);
-            }
-
-            // Función para obtener la ubicación del usuario
-            function getLocation() {
-                if (navigator.geolocation) {
-                    ubicacionDisplay.value = 'Obteniendo ubicación...';
-                    ubicacionDisplay.classList.remove('bg-green-50', 'bg-red-50');
-                    ubicacionDisplay.classList.add('bg-gray-100');
-
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            const lat = position.coords.latitude;
-                            const lon = position.coords.longitude;
-                            latitudInput.value = lat;
-                            longitudInput.value = lon;
-                            ubicacionDisplay.value = `${lat}, ${lon}`;
-                            ubicacionDisplay.classList.remove('bg-gray-100', 'bg-red-50');
-                            ubicacionDisplay.classList.add('bg-green-50');
-                        },
-                        (error) => {
-                            console.error('Error al obtener la ubicación:', error);
-                            ubicacionDisplay.classList.remove('bg-gray-100', 'bg-green-50');
-                            ubicacionDisplay.classList.add('bg-red-50');
-                            latitudInput.value = '';
-                            longitudInput.value = '';
-
-                            let errorMessage = 'Ubicación no disponible.';
-                            switch (error.code) {
-                                case error.PERMISSION_DENIED:
-                                    errorMessage = 'Permiso de geolocalización denegado.';
-                                    break;
-                                case error.POSITION_UNAVAILABLE:
-                                    errorMessage = 'Información de ubicación no disponible.';
-                                    break;
-                                case error.TIMEOUT:
-                                    errorMessage = 'Se agotó el tiempo para obtener la ubicación.';
-                                    break;
-                                default:
-                                    errorMessage = 'Error desconocido al obtener la ubicación.';
-                                    break;
-                            }
-                            ubicacionDisplay.value = errorMessage;
-                        },
-                        {
-                            enableHighAccuracy: true,
-                            timeout: 10000,
-                            maximumAge: 0
-                        }
-                    );
-                } else {
-                    ubicacionDisplay.value = 'Geolocalización no soportada por este navegador.';
-                    ubicacionDisplay.classList.remove('bg-gray-100', 'bg-green-50');
-                    ubicacionDisplay.classList.add('bg-red-50');
-                }
-            }
-
-            // Inicializar fecha/hora y ubicación al cargar la página
-            updateDateTime();
-            getLocation();
-
-            // Manejar el envío del formulario
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
-
-                // Validar formulario HTML5
-                if (!form.checkValidity()) {
-                    messageDiv.innerHTML = '<p class="text-red-600 font-semibold">Por favor, rellena todos los campos requeridos correctamente.</p>';
-                    messageDiv.classList.remove('text-green-600', 'text-blue-600');
-                    messageDiv.classList.add('text-red-600');
-                    return;
-                }
-
-                submitButton.disabled = true; // Deshabilita el botón
-                submitButton.classList.add('opacity-50', 'cursor-not-allowed'); // Estilo para deshabilitado
-
-                messageDiv.innerHTML = '<p class="text-blue-600">Enviando datos...</p>';
-                messageDiv.classList.remove('text-green-600', 'text-red-600');
-                messageDiv.classList.add('text-blue-600');
-
-                const formData = new FormData(form);
-
-                try {
-                    const response = await fetch(GOOGLE_APP_SCRIPT_URL, {
-                        method: 'POST',
-                        body: formData,
-                    });
-
-                    if (response.ok) {
-                        const result = await response.json();
-                        if (result.status === 'success') {
-                            messageDiv.innerHTML = '<p class="text-green-600 font-semibold">¡Datos enviados con éxito!</p>';
-                            form.reset();
-                            updateDateTime(); // Actualiza fecha/hora después de resetear
-                            getLocation(); // Vuelve a obtener ubicación después de resetear
-                        } else {
-                            messageDiv.innerHTML = `<p class="text-red-600 font-semibold">Error al enviar: ${result.message || 'Error desconocido'}</p>`;
-                        }
-                    } else {
-                        messageDiv.innerHTML = '<p class="text-red-600 font-semibold">Error de red o del servidor. Inténtalo de nuevo.</p>';
-                        console.error('Error de respuesta del servidor:', response.status, response.statusText);
-                    }
-                } catch (error) {
-                    messageDiv.innerHTML = '<p class="text-red-600 font-semibold">Error al conectar con el servidor. Verifica la URL.</p>';
-                    console.error('Error en la solicitud fetch:', error);
-                } finally {
-                    submitButton.disabled = false; // Habilita el botón de nuevo
-                    submitButton.classList.remove('opacity-50', 'cursor-not-allowed'); // Quita estilo
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+  // Devuelve una respuesta JSON al formulario web
+  return ContentService.createTextOutput(JSON.stringify({ status: 'success', message: 'Datos guardados con éxito' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
