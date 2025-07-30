@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Entrada de Datos</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilo personalizado para la fuente Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-2xl transform transition-all duration-300 hover:scale-[1.01]">
+        <h1 class="text-3xl font-extrabold text-center text-gray-800 mb-8">Registro de Datos</h1>
+
+        <form id="dataForm" class="space-y-6">
+            <!-- Fecha y Hora Automática -->
+            <div>
+                <label for="fechaHora" class="block text-sm font-medium text-gray-700 mb-1">Fecha y Hora</label>
+                <input type="text" id="fechaHora" name="Fecha y Hora" readonly
+                       class="mt-1 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+            </div>
+
+            <!-- Nombre de Empresa -->
+            <div>
+                <label for="nombreEmpresa" class="block text-sm font-medium text-gray-700 mb-1">Nombre de Empresa</label>
+                <input type="text" id="nombreEmpresa" name="Nombre de Empresa" required
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                       placeholder="Ej: Mi Empresa S.A.">
+            </div>
+
+            <!-- Dirección -->
+            <div>
+                <label for="direccion" class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                <input type="text" id="direccion" name="Dirección" required
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                       placeholder="Ej: Av. Principal 123, Ciudad">
+            </div>
+
+            <!-- Teléfono -->
+            <div>
+                <label for="telefono" class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                <input type="tel" id="telefono" name="Teléfono" required
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                       placeholder="Ej: +56 9 1234 5678">
+            </div>
+
+            <!-- Encargado -->
+            <div>
+                <label for="encargado" class="block text-sm font-medium text-gray-700 mb-1">Encargado</label>
+                <input type="text" id="encargado" name="Encargado" required
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                       placeholder="Ej: Juan Pérez">
+            </div>
+
+            <!-- Correo Electrónico -->
+            <div>
+                <label for="correoElectronico" class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                <input type="email" id="correoElectronico" name="Correo Electrónico" required
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                       placeholder="Ej: contacto@empresa.com">
+            </div>
+
+            <!-- Observación -->
+            <div>
+                <label for="observacion" class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
+                <textarea id="observacion" name="Observación" rows="4"
+                          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                          placeholder="Cualquier observación adicional..."></textarea>
+            </div>
+
+            <!-- Ubicación Automática (Campos ocultos para latitud y longitud) -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Ubicación (Latitud, Longitud)</label>
+                <input type="text" id="ubicacionDisplay" readonly
+                       class="mt-1 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                       placeholder="Obteniendo ubicación...">
+                <input type="hidden" id="latitud" name="Latitud">
+                <input type="hidden" id="longitud" name="Longitud">
+            </div>
+
+            <!-- Mensajes de estado -->
+            <div id="message" class="text-center mt-4"></div>
+
+            <!-- Botón de Envío -->
+            <button type="submit"
+                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0 active:scale-95">
+                Enviar Datos
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('dataForm');
+            const fechaHoraInput = document.getElementById('fechaHora');
+            const ubicacionDisplay = document.getElementById('ubicacionDisplay');
+            const latitudInput = document.getElementById('latitud');
+            const longitudInput = document.getElementById('longitud');
+            const messageDiv = document.getElementById('message');
+
+            // --- Configuración ---
+            // Reemplaza esta URL con la URL de tu Google App Script desplegado.
+            // Para obtenerla: En tu proyecto de Google App Script, ve a "Implementar" > "Nueva implementación".
+            // Elige "Tipo: Aplicación web" y configura el acceso.
+            const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0MYEi0PxIvrOMrsjnLMPEumNfuak2u9WmaDYrOnyFwdJOqh9cgRCGSy3GrRDweDH10Q/exec'; // ¡URL actualizada!
+            // --- Fin de Configuración ---
+
+            // Función para obtener la fecha y hora actual
+            function updateDateTime() {
+                const now = new Date();
+                const options = {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit',
+                    hour12: false // Formato 24 horas
+                };
+                fechaHoraInput.value = now.toLocaleString('es-CL', options);
+            }
+
+            // Función para obtener la ubicación del usuario
+            function getLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const lat = position.coords.latitude;
+                            const lon = position.coords.longitude;
+                            latitudInput.value = lat;
+                            longitudInput.value = lon;
+                            ubicacionDisplay.value = `${lat}, ${lon}`;
+                            ubicacionDisplay.classList.remove('bg-gray-100');
+                            ubicacionDisplay.classList.add('bg-green-50');
+                        },
+                        (error) => {
+                            console.error('Error al obtener la ubicación:', error);
+                            ubicacionDisplay.value = 'Ubicación no disponible.';
+                            ubicacionDisplay.classList.remove('bg-gray-100');
+                            ubicacionDisplay.classList.add('bg-red-50');
+                            // Si el usuario deniega, aún enviamos el formulario, pero con campos de ubicación vacíos.
+                            latitudInput.value = '';
+                            longitudInput.value = '';
+                        },
+                        {
+                            enableHighAccuracy: true, // Intenta obtener la mejor ubicación posible
+                            timeout: 10000,           // Tiempo máximo para obtener la ubicación (10 segundos)
+                            maximumAge: 0             // No usar una ubicación en caché
+                        }
+                    );
+                } else {
+                    ubicacionDisplay.value = 'Geolocalización no soportada por este navegador.';
+                    ubicacionDisplay.classList.remove('bg-gray-100');
+                    ubicacionDisplay.classList.add('bg-red-50');
+                }
+            }
+
+            // Inicializar fecha/hora y ubicación al cargar la página
+            updateDateTime();
+            getLocation();
+
+            // Manejar el envío del formulario
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault(); // Prevenir el envío predeterminado del formulario
+
+                messageDiv.innerHTML = '<p class="text-blue-600">Enviando datos...</p>';
+                messageDiv.classList.remove('text-green-600', 'text-red-600');
+                messageDiv.classList.add('text-blue-600');
+
+                // Crear un objeto FormData con todos los campos del formulario
+                const formData = new FormData(form);
+
+                // Convertir FormData a un objeto plano para ver los datos o enviar como JSON si el script lo requiere
+                const object = {};
+                formData.forEach((value, key) => {
+                    object[key] = value;
+                });
+                // console.log('Datos a enviar:', object); // Para depuración
+
+                try {
+                    const response = await fetch(GOOGLE_APP_SCRIPT_URL, {
+                        method: 'POST',
+                        // body: JSON.stringify(object), // Si tu App Script espera JSON
+                        body: formData, // Si tu App Script espera FormData (más común para doGet/doPost simples)
+                        // headers: {
+                        //     'Content-Type': 'application/json' // Solo si envías JSON
+                        // }
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json(); // Asume que App Script devuelve JSON
+                        if (result.status === 'success') {
+                            messageDiv.innerHTML = '<p class="text-green-600 font-semibold">¡Datos enviados con éxito!</p>';
+                            form.reset(); // Limpiar el formulario después del envío exitoso
+                            updateDateTime(); // Actualizar fecha/hora para un nuevo envío
+                            getLocation(); // Actualizar ubicación para un nuevo envío
+                        } else {
+                            messageDiv.innerHTML = `<p class="text-red-600 font-semibold">Error al enviar: ${result.message || 'Error desconocido'}</p>`;
+                        }
+                    } else {
+                        messageDiv.innerHTML = '<p class="text-red-600 font-semibold">Error de red o del servidor. Inténtalo de nuevo.</p>';
+                        console.error('Error de respuesta del servidor:', response.status, response.statusText);
+                    }
+                } catch (error) {
+                    messageDiv.innerHTML = '<p class="text-red-600 font-semibold">Error al conectar con el servidor. Verifica la URL.</p>';
+                    console.error('Error en la solicitud fetch:', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
