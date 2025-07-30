@@ -11,9 +11,13 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+        /* Definir un color verde medio personalizado si Tailwind no tiene uno exacto */
+        .bg-green-220 {
+            background-color: #d1fae5; /* Un verde claro/medio, puedes ajustarlo */
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4">
+<body class="bg-green-220 min-h-screen flex items-center justify-center p-4">
     <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-2xl transform transition-all duration-300 hover:scale-[1.01]">
         <h1 class="text-3xl font-extrabold text-center text-gray-800 mb-8">Registro de Datos</h1>
 
@@ -104,10 +108,7 @@
             const messageDiv = document.getElementById('message');
 
             // --- Configuración ---
-            // Reemplaza esta URL con la URL de tu Google App Script desplegado.
-            // Para obtenerla: En tu proyecto de Google App Script, ve a "Implementar" > "Nueva implementación".
-            // Elige "Tipo: Aplicación web" y configura el acceso.
-            const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0MYEi0PxIvrOMrsjnLMPEumNfuak2u9WmaDYrOnyFwdJOqh9cgRCGSy3GrRDweDH10Q/exec'; // ¡URL actualizada!
+            const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0MYEi0PxIvrOMrsjnLMPEumNfuak2u9WmaDYrOnyFwdJOqh9cgRCGSy3GrRDweDH10Q/exec';
             // --- Fin de Configuración ---
 
             // Función para obtener la fecha y hora actual
@@ -139,14 +140,13 @@
                             ubicacionDisplay.value = 'Ubicación no disponible.';
                             ubicacionDisplay.classList.remove('bg-gray-100');
                             ubicacionDisplay.classList.add('bg-red-50');
-                            // Si el usuario deniega, aún enviamos el formulario, pero con campos de ubicación vacíos.
                             latitudInput.value = '';
                             longitudInput.value = '';
                         },
                         {
-                            enableHighAccuracy: true, // Intenta obtener la mejor ubicación posible
-                            timeout: 10000,           // Tiempo máximo para obtener la ubicación (10 segundos)
-                            maximumAge: 0             // No usar una ubicación en caché
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 0
                         }
                     );
                 } else {
@@ -162,39 +162,31 @@
 
             // Manejar el envío del formulario
             form.addEventListener('submit', async function(e) {
-                e.preventDefault(); // Prevenir el envío predeterminado del formulario
+                e.preventDefault();
 
                 messageDiv.innerHTML = '<p class="text-blue-600">Enviando datos...</p>';
                 messageDiv.classList.remove('text-green-600', 'text-red-600');
                 messageDiv.classList.add('text-blue-600');
 
-                // Crear un objeto FormData con todos los campos del formulario
                 const formData = new FormData(form);
-
-                // Convertir FormData a un objeto plano para ver los datos o enviar como JSON si el script lo requiere
                 const object = {};
                 formData.forEach((value, key) => {
                     object[key] = value;
                 });
-                // console.log('Datos a enviar:', object); // Para depuración
 
                 try {
                     const response = await fetch(GOOGLE_APP_SCRIPT_URL, {
                         method: 'POST',
-                        // body: JSON.stringify(object), // Si tu App Script espera JSON
-                        body: formData, // Si tu App Script espera FormData (más común para doGet/doPost simples)
-                        // headers: {
-                        //     'Content-Type': 'application/json' // Solo si envías JSON
-                        // }
+                        body: formData,
                     });
 
                     if (response.ok) {
-                        const result = await response.json(); // Asume que App Script devuelve JSON
+                        const result = await response.json();
                         if (result.status === 'success') {
                             messageDiv.innerHTML = '<p class="text-green-600 font-semibold">¡Datos enviados con éxito!</p>';
-                            form.reset(); // Limpiar el formulario después del envío exitoso
-                            updateDateTime(); // Actualizar fecha/hora para un nuevo envío
-                            getLocation(); // Actualizar ubicación para un nuevo envío
+                            form.reset();
+                            updateDateTime();
+                            getLocation();
                         } else {
                             messageDiv.innerHTML = `<p class="text-red-600 font-semibold">Error al enviar: ${result.message || 'Error desconocido'}</p>`;
                         }
